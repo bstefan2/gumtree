@@ -8,6 +8,7 @@ import org.junit.Test;
 
 import static junit.framework.Assert.assertNull;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Test container for Address Book
@@ -35,7 +36,7 @@ public class AddressBookTest {
     }
 
     /**
-     * Tests for who is the oldest person in the address book
+     * Tests for who is the oldest person in the address book feature
      */
     @Test
     public void testOldestPersonInAddressBook() {
@@ -46,5 +47,29 @@ public class AddressBookTest {
     public void testOldestPersonInEmptyAddressBook() {
         addressBookService = new AddressBookServiceImpl("src/test/resources/EmptyAddressBook");
         assertNull(null, addressBookService.getOldest());
+    }
+
+    /**
+     * Tests for how many days older is Bill than Paul feature
+     */
+    @Test
+    public void testAgeDifference() {
+        assertEquals(2862, addressBookService.getAgeDifference("Bill", "Paul"));
+    }
+
+    @Test
+    public void testAgeNegativeDifference() {
+        /** i assumed that a negative result may mean that bill is younger than paul */
+        assertEquals(-2862, addressBookService.getAgeDifference("Paul", "Bill"));
+    }
+
+    @Test
+    public void testAgeDifferenceWithInvalidInput() {
+        try {
+            assertEquals(0, addressBookService.getAgeDifference("Stefan", "Bill"));
+        } catch (Exception e) {
+            assertTrue(true);
+        }
+
     }
 }

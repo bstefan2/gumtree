@@ -22,4 +22,13 @@ public interface AddressBookService {
      */
     Person getOldest();
 
+
+    /**
+     * Gets the age difference between two persons given their first name.
+     * A negative result means that <code>secondForename</code> is younger than <code>firstForname</code>
+     * @param firstForename first person's forename
+     * @param secondForename second person's forename
+     * @return the age difference between two persons given their first name
+     */
+    long getAgeDifference(String firstForename, String secondForename);
 }

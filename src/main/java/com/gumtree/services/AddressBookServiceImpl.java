@@ -6,6 +6,8 @@ import com.gumtree.model.Person;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
@@ -60,6 +62,35 @@ public class AddressBookServiceImpl implements AddressBookService {
                     map(mapLineToPerson).
                     reduce((p1,p2) -> p1.getBirthDate().isBefore(p2.getBirthDate()) ? p1 : p2).
                     orElse(null);
+        } catch (Exception e) {
+            throw new OperationException(e);
+        }
+    }
+
+    @Override
+    /**
+     * {@inheritDoc}
+     */
+    public long getAgeDifference(String firstPersonName, String secondPersonName) {
+        /** get the two dates for each person */
+        LocalDate firstDate = getPersonBirthday(firstPersonName);
+        LocalDate secondDate = getPersonBirthday(secondPersonName);
+
+        /** get the actual days number */
+        return ChronoUnit.DAYS.between(firstDate, secondDate);
+    }
+
+    private LocalDate getPersonBirthday(String forename) {
+        /** get the stream from the file */
+        try (Stream<String> lines = Files.lines(Paths.get(datasourceURI))) {
+            Function<String, Person> datasourceRecordToPerson = new PersonMapper();
+
+            return lines.
+                    map(datasourceRecordToPerson).
+                    filter(person -> person.getName().startsWith(forename)).
+                    map(Person::getBirthDate).
+                    findFirst().
+                    orElseThrow(() -> new IllegalArgumentException("Person " + forename + " does not exist"));
         } catch (Exception e) {
             throw new OperationException(e);
         }
