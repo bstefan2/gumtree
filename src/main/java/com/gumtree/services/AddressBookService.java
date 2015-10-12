@@ -16,4 +16,10 @@ public interface AddressBookService {
      */
     long getCount(Person.Sex bySexFilter);
 
+    /**
+     * Gets the first oldest person in the address book
+     * @return the oldest person in the address book. returns null if there is no person
+     */
+    Person getOldest();
+
 }

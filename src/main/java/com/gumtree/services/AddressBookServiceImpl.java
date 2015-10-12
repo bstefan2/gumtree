@@ -46,4 +46,23 @@ public class AddressBookServiceImpl implements AddressBookService {
             throw new OperationException(e);
         }
     }
+
+    @Override
+    /**
+     * {@inheritDoc}
+     */
+    public Person getOldest() {
+        /** get the stream from the file */
+        try (Stream<String> lines = Files.lines(Paths.get(datasourceURI))) {
+            Function<String, Person> mapLineToPerson = new PersonMapper();
+
+            return lines.
+                    map(mapLineToPerson).
+                    reduce((p1,p2) -> p1.getBirthDate().isBefore(p2.getBirthDate()) ? p1 : p2).
+                    orElse(null);
+        } catch (Exception e) {
+            throw new OperationException(e);
+        }
+    }
+
 }
